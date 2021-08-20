@@ -1,21 +1,14 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 
-//const notes = require("./Develop/db/db.json");
+const app = express();
 
 app.use(express.static('public'));
-app.use('/'. require ('./router/notes.js'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-//get single note
-app.get('/api/notes/:id', (req, res) => {
-    res.json(notes.filter(notes => notes.id === parseINT(req.params.id)));
-});
-//gets all notes
-app.get('/api/notes', (req, res) => {
-    res.json(notes);
-})
-
+app.use("/", require("./routes/api"));
+app.use("/", require("./routes/html"));
 
 const PORT = process.env.PORT || 5000;
 
