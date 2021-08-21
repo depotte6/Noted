@@ -1,9 +1,13 @@
 const express = require('express');
+const path = require('path');
 const fs = require('fs');
+const util = require('util');
 const router = express.Router();
 const notesData = require('../Develop/db/db.json');
 router.use(express.json());
 router.use(express.urlencoded({extended: true }));
+
+const readFromFile = util.promisify(fs.readFile);
 
 const readAndAppend = (content, file) => {
   fs.readFile(file, (err, data) => {
@@ -18,8 +22,8 @@ const readAndAppend = (content, file) => {
 }
 
 //gets all notes
-router.get('/', (req,res) => {
-    return res.json(notesData);
+router.get('/notes', (req,res) => {
+     res.sendFile(path.join(__dirname, '../Develop/public/notes.html'))
 });
  //read the db.json file and return all saved notes as JSON
 //get single note
@@ -53,5 +57,20 @@ router.post('/api/notes', (req, res) => {
       res.json("Couldn't add new note")
     }
   });
+
+ // router.delete('/api/motes:id'), (req, res) => {
+   // const index = db.findIndex(notesData => notesData.id === req.params.id)
+  //  notesData.splice(index,1)
+ // res.send(`the note has been deleted!`)
+ // }
+ router.get('/notes', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Develop/public/notes.html'));
+});
+
+//returns the index.html
+router.get('/api/notes', (req, res) => {
+  readFromFile("../Develop/db/db.json").then((data => res.json(JSON.parse(data))));
+});
+
 
 module.exports = router;
